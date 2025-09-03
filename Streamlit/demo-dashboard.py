@@ -66,15 +66,17 @@ total_pages = (len(filtered_df) - 1) // page_size + 1
 if "page" not in st.session_state:
     st.session_state.page = 1
 
+tabcol1, tabcol2 = st.columns(2)
+
 # Show Table
-st.subheader("Raw Data")
+tabcol1.subheader("Raw Data")
 # Slice DataFrame for current page
 start = (st.session_state.page - 1) * page_size
 end = start + page_size
-st.dataframe(filtered_df.sort_values(by="Date", ascending=False).iloc[start:end], use_container_width=True)
+tabcol1.dataframe(filtered_df.sort_values(by="Date", ascending=False).iloc[start:end], use_container_width=True)
 
 # Navigation buttons
-col1, col2, col3 = st.columns([10,1,1])
+col1, col2, col3 = tabcol1.columns([8,2,2])
 
 with col1:
     if st.button("⬅️ Previous") and st.session_state.page > 1:
@@ -86,3 +88,8 @@ with col2:
 with col3:
     if st.button("Next ➡️") and st.session_state.page < total_pages:
         st.session_state.page += 1
+
+
+tabcol2.subheader("Raw Statistics")
+df_description = df.iloc[:, 3:].describe()
+tabcol2.dataframe(df_description, use_container_width=True)
